@@ -1,15 +1,7 @@
 spring:
-  cloud:
-    azure:
-      storage:
-        blob:
-          connection-string: "DefaultEndpointsProtocol=https;AccountName=minwoo;AccountKey=gY0ulQNDKcZGVtOiC1Uh2OiwzYLcehNzivEqjAr2GKEWkQYZlRKHeZZMqjtXALg/0BLcfFm3K1yv+AStjcQg9A==;EndpointSuffix=core.windows.net"
-          container-name: "minwoo"
-  datasource:
-    url: jdbc:postgresql://localhost:5432/balance_game
-    username: root
-    password: 1234
-    driver-class-name: org.postgresql.Driver
+  config:
+    import: optional:application-secret.yml
+
   jpa:
     hibernate:
 #          ddl-auto: create
@@ -18,6 +10,3 @@ spring:
         #        show_sql: true
         default_batch_fetch_size: 100
         format_sql: true
-jwt:
-  secret: 'dasdkqwjdiniononb123bosdjbnj123112as'
-  access-token-expiration-minutes: 60 #

@@ -47,4 +47,11 @@ public class User extends BaseTimeEntity {
         this.nickname = nickname;
         this.role = (role != null) ? role : Role.USER; // 기본값으로 USER 설정
     }
+
+    public User updateOAuthInfo(String nickname, String provider, String providerId) {
+        this.nickname = nickname; // 소셜 프로필의 닉네임으로 업데이트
+        this.provider = provider;
+        this.providerId = providerId;
+        return this;
+    }
 }

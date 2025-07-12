@@ -1,16 +1,16 @@
 // src/main/java/Balance_Game/Balance_Game/controller/QuestionBundleController.java
 package Balance_Game.Balance_Game.controller;
 
+import Balance_Game.Balance_Game.dto.PopularBundleDto;
 import Balance_Game.Balance_Game.dto.QuestionBundleCreateRequestDto;
 import Balance_Game.Balance_Game.service.QuestionBundleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +33,11 @@ public class QuestionBundleController {
         // 여기서는 이메일로 사용자 정보를 찾는 것으로 가정합니다.
         Long bundleId = questionBundleService.createBundleByEmail(requestDto, userEmail);
         return ResponseEntity.ok(bundleId);
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<Page<PopularBundleDto>> getPopularBundles(Pageable pageable) {
+        Page<PopularBundleDto> popularBundles = questionBundleService.getPopularBundles(pageable);
+        return ResponseEntity.ok(popularBundles);
     }
 }

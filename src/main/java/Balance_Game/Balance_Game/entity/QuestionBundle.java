@@ -42,4 +42,16 @@ public class QuestionBundle extends BaseTimeEntity {
         this.creator = creator;
         this.isPublic = isPublic;
     }
+
+    @Column(length = 255)
+    private String keywords; // 쉼표로 구분된 키워드 문자열 (예: "#우정,#친구")
+
+    @OneToOne(mappedBy = "questionBundle", cascade = CascadeType.ALL)
+    private QuestionBundleStats stats;
+
+    // 통계 엔티티를 초기화하는 편의 메서드
+    @PostPersist
+    public void createStats() {
+        this.stats = QuestionBundleStats.builder().questionBundle(this).build();
+    }
 }

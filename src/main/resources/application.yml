@@ -6,12 +6,12 @@ spring:
           connection-string: "DefaultEndpointsProtocol=https;AccountName=minwoo;AccountKey=gY0ulQNDKcZGVtOiC1Uh2OiwzYLcehNzivEqjAr2GKEWkQYZlRKHeZZMqjtXALg/0BLcfFm3K1yv+AStjcQg9A==;EndpointSuffix=core.windows.net"
           container-name: "minwoo"
   datasource:
-    url: jdbc:postgresql://localhost:5432/test
+    url: jdbc:postgresql://localhost:5432/postgres
     username: root
     password: 1234
     driver-class-name: org.postgresql.Driver
   jpa:
-    hibernate:
+#    hibernate:
 #          ddl-auto: create
     properties:
       hibernate:
@@ -19,5 +19,5 @@ spring:
         default_batch_fetch_size: 100
         format_sql: true
 jwt:
-  secret: 'dasdkqwjdiniononb123bosdjbnj123112as' #
+  secret: 'dasdkqwjdiniononb123bosdjbnj123112as'
   access-token-expiration-minutes: 60 #

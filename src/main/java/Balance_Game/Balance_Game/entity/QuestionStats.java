@@ -1,4 +1,3 @@
-// src/main/java/Balance_Game/Balance_Game/entity/QuestionStats.java
 package Balance_Game.Balance_Game.entity;
 
 import jakarta.persistence.*;

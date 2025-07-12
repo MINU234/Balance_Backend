@@ -1,12 +1,15 @@
 // src/main/java/Balance_Game/Balance_Game/service/QuestionBundleService.java
 package Balance_Game.Balance_Game.service;
 
+import Balance_Game.Balance_Game.dto.PopularBundleDto;
 import Balance_Game.Balance_Game.dto.QuestionBundleCreateRequestDto;
 import Balance_Game.Balance_Game.entity.*;
 import Balance_Game.Balance_Game.repository.QuestionBundleRepository;
 import Balance_Game.Balance_Game.repository.QuestionRepository;
 import Balance_Game.Balance_Game.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -65,5 +68,20 @@ public class QuestionBundleService {
         QuestionBundle savedBundle = questionBundleRepository.save(questionBundle);
 
         return savedBundle.getId();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PopularBundleDto> getPopularBundles(Pageable pageable) {
+        // 기존과 동일하게 Repository의 메서드를 호출합니다.
+        // Spring Data JPA가 알아서 QueryDSL 구현체를 찾아 실행해 줍니다.
+        return questionBundleRepository.findPopularBundles(pageable);
+    }
+
+    // [참고] 플레이 횟수 증가 로직 예시 (GamePlayService 등에 위치)
+    @Transactional
+    public void incrementPlayCount(Long bundleId) {
+        QuestionBundle bundle = questionBundleRepository.findById(bundleId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 묶음입니다."));
+        bundle.getStats().incrementPlayCount();
     }
 }

@@ -1,4 +1,3 @@
-// src/main/java/Balance_Game/Balance_Game/repository/QuestionStatsRepository.java
 package Balance_Game.Balance_Game.repository;
 
 import Balance_Game.Balance_Game.entity.QuestionStats;

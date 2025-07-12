@@ -40,10 +40,11 @@ public class QuestionStats {
     public QuestionStats(Question question) {
         this.question = question;
     }
-    public void incrementCount(String option) {
-        if ("A".equalsIgnoreCase(option)) {
+
+    public void incrementCount(SelectedOption option) {
+        if (option == SelectedOption.A) {
             this.optionACount++;
-        } else if ("B".equalsIgnoreCase(option)) {
+        } else if (option == SelectedOption.B) {
             this.optionBCount++;
         }
         this.totalCount++;

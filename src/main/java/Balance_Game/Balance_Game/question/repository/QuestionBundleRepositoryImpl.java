@@ -11,9 +11,10 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-import static Balance_Game.Balance_Game.entity.QQuestionBundle.questionBundle;
-import static Balance_Game.Balance_Game.entity.QQuestionBundleStats.questionBundleStats;
-import static Balance_Game.Balance_Game.entity.QUser.user;
+import static Balance_Game.Balance_Game.question.entity.QQuestionBundle.questionBundle;
+import static Balance_Game.Balance_Game.question.entity.QQuestionBundleStats.questionBundleStats;
+import static Balance_Game.Balance_Game.user.entity.QUser.user;
+
 
 @RequiredArgsConstructor
 public class QuestionBundleRepositoryImpl implements QuestionBundleRepositoryCustom {

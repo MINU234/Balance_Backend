@@ -38,3 +38,5 @@ out/
 
 application-secret.yml
 *.properties
+
+/src/main/generated

@@ -10,8 +10,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import java.util.List;
 
-import static Balance_Game.Balance_Game.entity.QQuestion.question;
-import static Balance_Game.Balance_Game.entity.QQuestionStats.questionStats;
+import static Balance_Game.Balance_Game.question.entity.QQuestion.question;
+import static Balance_Game.Balance_Game.question.entity.QQuestionStats.questionStats;
 
 @Repository
 @RequiredArgsConstructor

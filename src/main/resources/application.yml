@@ -1,10 +1,11 @@
 spring:
   config:
     import: optional:application-secret.yml
-
+  flyway:
+    baseline-on-migrate: true
   jpa:
     hibernate:
-#          ddl-auto: create
+          ddl-auto: none
     properties:
       hibernate:
         #        show_sql: true

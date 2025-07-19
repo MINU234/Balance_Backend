@@ -55,3 +55,21 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+// Querydsl QClass 파일 생성 위치 지정
+def querydslDir = 'src/main/generated'
+
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory.set(file(querydslDir))
+}
+
+// 생성된 Q-Class 폴더를 컴파일 소스셋에 추가
+sourceSets {
+	main.java.srcDirs += [querydslDir]
+}
+
+// Gradle clean 실행 시 QClass 디렉터리 삭제
+clean {
+	delete file(querydslDir)
+}
+

@@ -3,6 +3,8 @@ package Balance_Game.Balance_Game.question.repository;
 
 import Balance_Game.Balance_Game.common.dto.KeywordStatsDto;
 import Balance_Game.Balance_Game.question.entity.Question;
+import Balance_Game.Balance_Game.user.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -33,4 +35,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
      */
     @Query("SELECT COUNT(q) FROM Question q WHERE q.keyword = :keyword AND q.isActive = true")
     Long countByKeywordAndIsActiveTrue(@Param("keyword") String keyword);
+
+    Page<Question> findByCreator(User creator, Pageable pageable);
+
 }

@@ -1,6 +1,7 @@
 // src/main/java/Balance_Game/Balance_Game/controller/GamePlayController.java
 package Balance_Game.Balance_Game.game.controller;
 
+import Balance_Game.Balance_Game.game.dto.GameResultDto;
 import Balance_Game.Balance_Game.game.service.GamePlayService;
 import Balance_Game.Balance_Game.game.dto.AnswerRequestDto;
 import Balance_Game.Balance_Game.game.dto.GameSessionResponseDto;
@@ -28,5 +29,12 @@ public class GamePlayController {
     public ResponseEntity<Void> submitAnswer(@Valid @RequestBody AnswerRequestDto answerRequestDto) {
         gamePlayService.recordAnswer(answerRequestDto);
         return ResponseEntity.ok().build();
+    }
+
+    // 기존 GamePlayController.java에 추가
+    @GetMapping("/sessions/{sessionId}/results")
+    public ResponseEntity<GameResultDto> getGameResults(@PathVariable Long sessionId) {
+        GameResultDto results = gamePlayService.getGameResults(sessionId);
+        return ResponseEntity.ok(results);
     }
 }

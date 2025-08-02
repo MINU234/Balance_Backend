@@ -2,6 +2,7 @@ package Balance_Game.Balance_Game.question.controller;
 
 import Balance_Game.Balance_Game.question.dto.PopularBundleDto;
 import Balance_Game.Balance_Game.question.dto.QuestionBundleCreateRequestDto;
+import Balance_Game.Balance_Game.question.dto.QuestionBundleDetailDto;
 import Balance_Game.Balance_Game.question.service.QuestionBundleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,13 @@ public class QuestionBundleController {
         Long bundleId = questionBundleService.createBundleByEmail(requestDto, userEmail);
         return ResponseEntity.ok(bundleId);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<QuestionBundleDetailDto> getQuestionBundle(@PathVariable Long id) {
+        QuestionBundleDetailDto bundle = questionBundleService.findByIdWithQuestions(id);
+        return ResponseEntity.ok(bundle);
+    }
+
 
     @GetMapping("/popular")
     public ResponseEntity<Page<PopularBundleDto>> getPopularBundles(Pageable pageable) {

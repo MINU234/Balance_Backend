@@ -3,6 +3,7 @@ package Balance_Game.Balance_Game.question.service;
 
 import Balance_Game.Balance_Game.question.dto.PopularBundleDto;
 import Balance_Game.Balance_Game.question.dto.QuestionBundleCreateRequestDto;
+import Balance_Game.Balance_Game.question.dto.QuestionBundleDetailDto;
 import Balance_Game.Balance_Game.question.entity.BundleQuestion;
 import Balance_Game.Balance_Game.question.entity.Question;
 import Balance_Game.Balance_Game.question.entity.QuestionBundle;
@@ -98,9 +99,35 @@ public class QuestionBundleService {
                         .description(bundle.getDescription())
                         .creatorNickname(bundle.getCreator().getNickname())
                         .playCount((int) bundle.getStats().getPlayCount())
-                        .questionCount(bundle.getQuestions().size())
+                        .questionCount(bundle.getQuestionCount())
                         .keywords(bundle.getKeywords())
                         .build()
                 );
+    }
+
+    @Transactional(readOnly = true)
+    public QuestionBundleDetailDto findByIdWithQuestions(Long id) {
+        QuestionBundle bundle = questionBundleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 질문 묶음입니다."));
+
+        return QuestionBundleDetailDto.from(bundle);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<PopularBundleDto> findByCreatorEmail(String email, Pageable pageable) {
+        User creator = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 캐스팅 제거 및 바로 할당
+        Page<QuestionBundle> bundles = questionBundleRepository.findByCreator(creator, pageable);
+
+        return bundles.map(bundle -> PopularBundleDto.builder()
+                .id(bundle.getId())
+                .title(bundle.getTitle())
+                .description(bundle.getDescription())
+                .creatorNickname(bundle.getCreator().getNickname())
+                .playCount(bundle.getStats() != null ? (int) bundle.getStats().getPlayCount() : 0)
+                .questionCount(bundle.getQuestionCount())
+                .build());
     }
 }

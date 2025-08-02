@@ -1,6 +1,7 @@
 // src/main/java/Balance_Game/Balance_Game/service/GamePlayService.java
 package Balance_Game.Balance_Game.game.service;
 
+import Balance_Game.Balance_Game.game.dto.GameResultDto;
 import Balance_Game.Balance_Game.game.entity.GameSession;
 import Balance_Game.Balance_Game.game.entity.SelectedOption;
 import Balance_Game.Balance_Game.game.entity.UserAnswer;
@@ -23,6 +24,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,5 +98,29 @@ public class GamePlayService {
                 .orElseThrow(() -> new EntityNotFoundException("데이터 무결성 오류: 해당 질문의 통계 정보가 없습니다. ID: " + requestDto.getQuestionId()));
 
         questionStats.incrementCount(selectedEnumOption); // String이 아닌 enum을 전달
+    }
+
+    // 기존 GamePlayService.java에 추가
+    @Transactional(readOnly = true)
+    public GameResultDto getGameResults(Long sessionId) {
+        GameSession session = gameSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게임 세션입니다."));
+
+        // 해당 세션의 모든 답변 조회 (Repository에 메서드 필요)
+        List<UserAnswer> answers = userAnswerRepository.findBySessionId(sessionId);
+
+        // 결과 집계
+        Map<Long, String> userChoices = answers.stream()
+                .collect(Collectors.toMap(
+                        answer -> answer.getQuestion().getId(),
+                        answer -> answer.getSelectedOption().name() // A → "A", B → "B"
+                ));
+
+        return GameResultDto.builder()
+                .sessionId(sessionId)
+                .bundleTitle(session.getQuestionBundle().getTitle())
+                .userChoices(userChoices)
+                .totalQuestions(session.getQuestionBundle().getQuestionCount())
+                .build();
     }
 }

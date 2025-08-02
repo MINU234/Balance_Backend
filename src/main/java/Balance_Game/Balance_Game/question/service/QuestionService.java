@@ -3,6 +3,7 @@ package Balance_Game.Balance_Game.question.service;
 
 import Balance_Game.Balance_Game.question.dto.PopularQuestionDto;
 import Balance_Game.Balance_Game.question.dto.QuestionCreateRequestDto; // 새로 추가할 DTO
+import Balance_Game.Balance_Game.question.dto.QuestionDto;
 import Balance_Game.Balance_Game.question.entity.Question;
 import Balance_Game.Balance_Game.question.entity.QuestionStats;
 import Balance_Game.Balance_Game.user.entity.User;
@@ -75,5 +76,15 @@ public class QuestionService {
                 .optionBText(question.getOptionBText())
                 .creatorNickname(creatorNickname)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<QuestionDto> findByCreatorEmail(String email, Pageable pageable) {
+        User creator = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        Page<Question> questions = questionRepository.findByCreator(creator, pageable);
+
+        return questions.map(QuestionDto::from);
     }
 }

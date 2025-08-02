@@ -14,7 +14,7 @@ import java.util.List;
 public interface QuestionBundleRepository extends JpaRepository<QuestionBundle, Long>, QuestionBundleRepositoryCustom {
 
     // 특정 사용자가 만든 모든 질문 묶음 조회
-    List<QuestionBundle> findByCreator(User creator);
+    Page<QuestionBundle> findByCreator(User creator, Pageable pageable);
 
     // 공개 설정된 모든 질문 묶음 조회
     List<QuestionBundle> findByIsPublicTrue();

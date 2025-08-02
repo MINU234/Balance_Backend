@@ -1,4 +1,3 @@
-// src/main/java/Balance_Game/Balance_Game/controller/QuestionBundleController.java
 package Balance_Game.Balance_Game.question.controller;
 
 import Balance_Game.Balance_Game.question.dto.PopularBundleDto;
@@ -39,5 +38,16 @@ public class QuestionBundleController {
     public ResponseEntity<Page<PopularBundleDto>> getPopularBundles(Pageable pageable) {
         Page<PopularBundleDto> popularBundles = questionBundleService.getPopularBundles(pageable);
         return ResponseEntity.ok(popularBundles);
+    }
+
+    /**
+     * 검색어로 질문 묶음을 페이징 조회합니다.
+     */
+    @GetMapping("/search")
+    public Page<PopularBundleDto> searchBundles(
+            @RequestParam String query,
+            Pageable pageable
+    ) {
+        return questionBundleService.searchBundles(query, pageable);
     }
 }

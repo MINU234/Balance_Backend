@@ -27,6 +27,7 @@ public class QuestionBundleService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
 
+
     @Transactional
     public Long createBundleByEmail(QuestionBundleCreateRequestDto requestDto, String userEmail) {
         // 1. 이메일로 사용자 정보 조회
@@ -84,5 +85,22 @@ public class QuestionBundleService {
         QuestionBundle bundle = questionBundleRepository.findById(bundleId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 묶음입니다."));
         bundle.getStats().incrementPlayCount();
+    }
+
+    /**
+     * 질문 묶음을 검색어로 조회합니다.
+     */
+    public Page<PopularBundleDto> searchBundles(String query, Pageable pageable) {
+        return questionBundleRepository.findByTitleOrDescriptionContaining(query, pageable)
+                .map(bundle -> PopularBundleDto.builder()
+                        .id(bundle.getId())
+                        .title(bundle.getTitle())
+                        .description(bundle.getDescription())
+                        .creatorNickname(bundle.getCreator().getNickname())
+                        .playCount((int) bundle.getStats().getPlayCount())
+                        .questionCount(bundle.getQuestions().size())
+                        .keywords(bundle.getKeywords())
+                        .build()
+                );
     }
 }

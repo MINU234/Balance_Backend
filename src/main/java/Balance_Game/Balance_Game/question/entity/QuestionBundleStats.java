@@ -31,4 +31,9 @@ public class QuestionBundleStats {
     public void incrementPlayCount() {
         this.playCount++;
     }
+    
+    // QuestionBundle setter 추가
+    public void setQuestionBundle(QuestionBundle questionBundle) {
+        this.questionBundle = questionBundle;
+    }
 }

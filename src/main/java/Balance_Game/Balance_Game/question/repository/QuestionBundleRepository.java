@@ -29,4 +29,7 @@ public interface QuestionBundleRepository extends JpaRepository<QuestionBundle, 
             @Param("query") String query,
             Pageable pageable
     );
+    
+    // 사용자별 묶음 수 카운트
+    long countByCreator(User creator);
 }

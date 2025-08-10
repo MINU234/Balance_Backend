@@ -14,6 +14,7 @@ import java.util.Map;
 public class GameResultDto {
     private Long sessionId;
     private String bundleTitle;
+    private String shareCode;  // 공유 코드 추가
     private Map<Long, String> userChoices; // questionId -> selectedOption
     private Integer totalQuestions;
 }

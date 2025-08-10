@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -20,6 +22,10 @@ public class QuestionDto {
     private String optionBImageUrl;
     private String creatorNickname;
     private boolean isActive;
+    private String approvalStatus;
+    private String rejectionReason;
+    private LocalDateTime createdAt;
+    private LocalDateTime approvedAt;
 
     public static QuestionDto from(Question question) {
         return QuestionDto.builder()
@@ -33,6 +39,10 @@ public class QuestionDto {
                 .creatorNickname(question.getCreator() != null ?
                         question.getCreator().getNickname() : null)
                 .isActive(question.isActive())
+                .approvalStatus(question.getApprovalStatus().name())
+                .rejectionReason(question.getRejectionReason())
+                .createdAt(question.getCreatedAt())
+                .approvedAt(question.getApprovedAt())
                 .build();
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -26,4 +27,18 @@ public interface UserRepository extends JpaRepository<User, Long> {
      */
     @Query("SELECT COUNT(DISTINCT u) FROM User u WHERE u.updatedAt > :date")
     Long countActiveUsersAfter(@Param("date") LocalDateTime date);
+    
+    /**
+     * 관리자별 활동 통계 조회
+     * @return 관리자 이름, 승인 수, 거절 수, 마지막 활동 시간
+     */
+    @Query("SELECT u.nickname, " +
+           "SUM(CASE WHEN q.approvalStatus = 'APPROVED' THEN 1 ELSE 0 END), " +
+           "SUM(CASE WHEN q.approvalStatus = 'REJECTED' THEN 1 ELSE 0 END), " +
+           "MAX(q.approvedAt) " +
+           "FROM User u " +
+           "LEFT JOIN Question q ON q.approvedBy = u " +
+           "WHERE u.role = 'ADMIN' " +
+           "GROUP BY u.nickname")
+    List<Object[]> getAdminActivityStats();
 }

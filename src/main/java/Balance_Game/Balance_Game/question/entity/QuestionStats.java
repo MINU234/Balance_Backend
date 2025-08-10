@@ -50,4 +50,9 @@ public class QuestionStats {
         }
         this.totalCount++;
     }
+    
+    // Question setter 추가
+    public void setQuestion(Question question) {
+        this.question = question;
+    }
 }

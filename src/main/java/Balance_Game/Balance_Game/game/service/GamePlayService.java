@@ -107,7 +107,7 @@ public class GamePlayService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게임 세션입니다."));
 
         // 해당 세션의 모든 답변 조회 (Repository에 메서드 필요)
-        List<UserAnswer> answers = userAnswerRepository.findBySessionId(sessionId);
+        List<UserAnswer> answers = userAnswerRepository.findBygameSessionId(sessionId);
 
         // 결과 집계
         Map<Long, String> userChoices = answers.stream()

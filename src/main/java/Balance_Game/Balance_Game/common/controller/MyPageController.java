@@ -1,6 +1,8 @@
 // src/main/java/Balance_Game/Balance_Game/common/controller/MyPageController.java
 package Balance_Game.Balance_Game.common.controller;
 
+import Balance_Game.Balance_Game.common.dto.MyPageStatsDto;
+import Balance_Game.Balance_Game.common.service.MyPageService;
 import Balance_Game.Balance_Game.question.dto.PopularBundleDto;
 import Balance_Game.Balance_Game.question.dto.QuestionDto;
 import Balance_Game.Balance_Game.question.entity.ApprovalStatus;

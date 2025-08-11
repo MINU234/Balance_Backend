@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "question_bundle_stats")
 public class QuestionBundleStats {
 
     @Id
@@ -22,9 +23,11 @@ public class QuestionBundleStats {
     @Column(nullable = false)
     private long playCount = 0L; // 플레이 횟수
 
+    // 생성자에 @Builder 적용 (권장 방식)
     @Builder
     public QuestionBundleStats(QuestionBundle questionBundle) {
         this.questionBundle = questionBundle;
+        this.id = questionBundle.getId(); // MapsId 사용시 필요
     }
 
     // 플레이 횟수를 증가시키는 편의 메서드
@@ -32,8 +35,6 @@ public class QuestionBundleStats {
         this.playCount++;
     }
     
-    // QuestionBundle setter 추가
-    public void setQuestionBundle(QuestionBundle questionBundle) {
-        this.questionBundle = questionBundle;
-    }
+    // setter 메서드는 제거 (불필요)
+    // JPA가 내부적으로 리플렉션을 사용하므로 setter 없이도 동작
 }

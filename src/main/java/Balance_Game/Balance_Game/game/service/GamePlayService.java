@@ -22,6 +22,7 @@ import Balance_Game.Balance_Game.game.dto.StartGameRequestDto;
 import Balance_Game.Balance_Game.user.entity.User;
 import Balance_Game.Balance_Game.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -89,8 +90,10 @@ public class GamePlayService {
         // 6. 통계 업데이트
         QuestionBundleStats bundleStats = questionBundleStatsRepository.findById(bundle.getId())
                 .orElseGet(() -> {
-                    QuestionBundleStats newStats = new QuestionBundleStats();
-                    newStats.setQuestionBundle(bundle);
+                    // @Builder를 사용하여 생성
+                    QuestionBundleStats newStats = QuestionBundleStats.builder()
+                            .questionBundle(bundle)
+                            .build();
                     return questionBundleStatsRepository.save(newStats);
                 });
         bundleStats.incrementPlayCount();
@@ -142,8 +145,10 @@ public class GamePlayService {
         // 5. QuestionStats 업데이트
         QuestionStats questionStats = questionStatsRepository.findById(requestDto.getQuestionId())
                 .orElseGet(() -> {
-                    QuestionStats newStats = new QuestionStats();
-                    newStats.setQuestion(question);
+                    // @Builder를 사용하여 생성
+                    QuestionStats newStats = QuestionStats.builder()
+                            .question(question)
+                            .build();
                     return questionStatsRepository.save(newStats);
                 });
         questionStats.incrementCount(selectedEnumOption);

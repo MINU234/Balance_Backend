@@ -2,14 +2,13 @@ name: Backend CI/CD
 
 on:
   push:
-    branches: [ master ]
+    branches: [ create_admin_auth, master ]
     paths:
-      - 'Balance_Game/**'
-      - '.github/workflows/azure-deploy.yml'
+      - '**'
   pull_request:
-    branches: [ master ]
+    branches: [ create_admin_auth, master ]
     paths:
-      - 'Balance_Game/**'
+      - '**'
 
 env:
   AZURE_WEBAPP_NAME: balance-game
@@ -60,7 +59,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/create_admin_auth' || github.ref == 'refs/heads/master'
     
     steps:
     - name: Download build artifact

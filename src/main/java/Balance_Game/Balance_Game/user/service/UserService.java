@@ -5,6 +5,7 @@ import Balance_Game.Balance_Game.auth.dto.LoginRequestDto;
 import Balance_Game.Balance_Game.auth.dto.TokenDto;
 import Balance_Game.Balance_Game.user.dto.UserSignupRequestDto;
 import Balance_Game.Balance_Game.user.entity.User;
+import Balance_Game.Balance_Game.user.entity.Role;
 import Balance_Game.Balance_Game.user.repository.UserRepository;
 import Balance_Game.Balance_Game.auth.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -42,6 +43,7 @@ public class UserService {
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
                 .nickname(requestDto.getNickname())
+                .role(Role.USER)  // 기본 역할 설정
                 // 일반 가입이므로 provider 정보는 null
                 .build();
 

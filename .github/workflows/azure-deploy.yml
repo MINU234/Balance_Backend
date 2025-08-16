@@ -50,28 +50,5 @@ jobs:
         name: jar-artifact
         path: build/libs/*.jar
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/create_admin_auth' || github.ref == 'refs/heads/master'
-    
-    steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: jar-artifact
-        
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        package: '*.jar'
-        
-    - name: Restart Azure Web App
-      run: |
-        az webapp restart --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group MINWOO
+  # Note: Manual deployment required - Azure credentials not configured
+  # Download the JAR artifact from GitHub Actions and deploy manually using Azure CLI

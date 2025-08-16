@@ -36,7 +36,7 @@ public class User extends BaseTimeEntity {
     private String nickname;
 
     @Enumerated(EnumType.STRING) // DB에 Enum 이름을 문자열로 저장
-    @Column(nullable = false)
+    @Column(nullable = true) // 기존 데이터 호환성을 위해 임시로 nullable = true
     private Role role;
 
     @Builder

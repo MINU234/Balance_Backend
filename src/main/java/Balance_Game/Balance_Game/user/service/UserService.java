@@ -38,12 +38,12 @@ public class UserService {
         // 2. 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
-        // 3. 사용자 정보 생성 및 저장
+        // 3. 사용자 정보 생성 및 저장 (Role 확실히 설정)
         User user = User.builder()
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
                 .nickname(requestDto.getNickname())
-                .role(Role.USER)  // 기본 역할 설정
+                .role(Role.USER)  // 기본 역할 USER로 설정 - 필수!
                 // 일반 가입이므로 provider 정보는 null
                 .build();
 

@@ -4,6 +4,7 @@ package Balance_Game.Balance_Game.user.service;
 import Balance_Game.Balance_Game.auth.dto.LoginRequestDto;
 import Balance_Game.Balance_Game.auth.dto.TokenDto;
 import Balance_Game.Balance_Game.user.dto.UserSignupRequestDto;
+import Balance_Game.Balance_Game.user.dto.UserInfoDto;
 import Balance_Game.Balance_Game.user.entity.User;
 import Balance_Game.Balance_Game.user.entity.Role;
 import Balance_Game.Balance_Game.user.repository.UserRepository;
@@ -72,5 +73,41 @@ public class UserService {
     public User findByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일을 가진 사용자를 찾을 수 없습니다: " + email));
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfoDto getUserInfo(String email) {
+        User user = findByEmail(email);
+        return UserInfoDto.from(user);
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfoDto getUserInfoById(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다: " + userId));
+        return UserInfoDto.from(user);
+    }
+
+    @Transactional
+    public UserInfoDto updateNickname(String email, String newNickname) {
+        // 닉네임 중복 체크
+        if (userRepository.existsByNickname(newNickname)) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
+
+        User user = findByEmail(email);
+        // User 엔티티에 updateNickname 메서드가 있다면 사용, 없다면 직접 필드 변경
+        // 현재는 필드 변경 방식으로 구현
+        User updatedUser = User.builder()
+                .provider(user.getProvider())
+                .providerId(user.getProviderId())
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .nickname(newNickname)
+                .role(user.getRole())
+                .build();
+
+        User savedUser = userRepository.save(updatedUser);
+        return UserInfoDto.from(savedUser);
     }
 }

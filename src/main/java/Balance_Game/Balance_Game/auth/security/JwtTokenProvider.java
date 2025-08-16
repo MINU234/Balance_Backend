@@ -1,5 +1,6 @@
 package Balance_Game.Balance_Game.auth.security;
 
+import Balance_Game.Balance_Game.auth.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;

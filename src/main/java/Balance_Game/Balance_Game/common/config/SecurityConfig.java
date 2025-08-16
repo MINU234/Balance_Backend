@@ -81,7 +81,7 @@ public class SecurityConfig {
                                 "/auth/**",                    // 일반 로그인/회원가입
                                 "/game/**",                    // 게임 플레이 (비회원 가능)
                                 "/oauth2/**",                      // 소셜 로그인 관련 경로
-                                "/actuator/**",                    // 모든 actuator 엔드포인트
+                                "/actuator/**"                     // 모든 actuator 엔드포인트
                         ).permitAll()
                         // --- 특정 GET 요청은 누구나 가능하도록 구체화 ---
                         .requestMatchers(HttpMethod.GET,

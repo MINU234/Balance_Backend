@@ -100,7 +100,7 @@ info:
   app:
     name: Balance Game
     description: Interactive Balance Game Application
-    version: @project.version@
-    encoding: @project.build.sourceEncoding@
+    version: 1.0.0
+    encoding: UTF-8
     java:
-      version: @java.version@
+      version: 17

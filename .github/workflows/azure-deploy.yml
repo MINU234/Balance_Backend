@@ -39,22 +39,19 @@ jobs:
           ${{ runner.os }}-gradle-
           
     - name: Grant execute permission for gradlew
-      working-directory: ./Balance_Game
       run: chmod +x gradlew
       
     - name: Run tests
-      working-directory: ./Balance_Game
       run: ./gradlew test
       
     - name: Build application
-      working-directory: ./Balance_Game
       run: ./gradlew build -x test
       
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: jar-artifact
-        path: Balance_Game/build/libs/*.jar
+        path: build/libs/*.jar
 
   deploy:
     needs: build

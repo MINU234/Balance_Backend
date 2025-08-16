@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/game")
+@RequestMapping("/game")
 @RequiredArgsConstructor
 @CrossOrigin(origins = "*") // CORS 설정 (프론트엔드 연동용)
 public class GamePlayController {

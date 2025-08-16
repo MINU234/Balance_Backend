@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/api/keywords")
+@RequestMapping("/keywords")
 @RequiredArgsConstructor
 public class KeywordController {
 

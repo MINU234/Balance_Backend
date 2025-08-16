@@ -36,20 +36,20 @@ public class QuestionBundle extends BaseTimeEntity {
     @Column(name = "is_public", nullable = false)
     private boolean isPublic = false;
 
+    @Column(length = 255)
+    private String keywords; // 쉼표로 구분된 키워드 문자열 (예: "#우정,#친구")
+
     @OneToMany(mappedBy = "questionBundle", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<BundleQuestion> bundleQuestions = new ArrayList<>();
 
-
     @Builder
-    public QuestionBundle(String title, String description, User creator, boolean isPublic) {
+    public QuestionBundle(String title, String description, User creator, boolean isPublic, String keywords) {
         this.title = title;
         this.description = description;
         this.creator = creator;
         this.isPublic = isPublic;
+        this.keywords = keywords;
     }
-
-    @Column(length = 255)
-    private String keywords; // 쉼표로 구분된 키워드 문자열 (예: "#우정,#친구")
 
     @OneToOne(mappedBy = "questionBundle", cascade = CascadeType.ALL)
     private QuestionBundleStats stats;

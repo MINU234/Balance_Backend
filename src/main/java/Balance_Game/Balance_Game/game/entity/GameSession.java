@@ -73,7 +73,7 @@ public class GameSession {
     @Column(name = "temp_user_id", length = 50)
     private String tempUserId;
 
-    @OneToMany(mappedBy = "gameSession", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "gameSession", fetch = FetchType.LAZY)
     private List<UserAnswer> userAnswers = new ArrayList<>();
 
     @Builder
@@ -97,7 +97,7 @@ public class GameSession {
     public void setShareCode(String shareCode) {
         this.shareCode = shareCode;
         this.shareCodeCreatedAt = LocalDateTime.now();
-        this.shareCodeExpiresAt = LocalDateTime.now().plusDays(7); // 7일 후 만료
+        this.shareCodeExpiresAt = LocalDateTime.now().plusDays(3); // 3일 후 만료
     }
     
     // 공유코드 유효성 확인

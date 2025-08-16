@@ -47,8 +47,9 @@ public interface GameSessionRepository extends JpaRepository<GameSession, Long> 
            "WHERE gs.shareCodeExpiresAt < :now AND gs.shareCode IS NOT NULL")
     int expireShareCodesOlderThan(@Param("now") LocalDateTime now);
     
-    // 오래된 임시 사용자 세션 삭제
+    // 오래된 임시 사용자 세션의 개인정보만 익명화 (통계 데이터는 보존)
     @Modifying
-    @Query("DELETE FROM GameSession gs WHERE gs.tempUserId IS NOT NULL AND gs.createdAt < :cutoffDate")
-    int deleteOldTempUserSessions(@Param("cutoffDate") LocalDateTime cutoffDate);
+    @Query("UPDATE GameSession gs SET gs.tempUserId = 'ANONYMIZED_' || gs.id " +
+           "WHERE gs.tempUserId IS NOT NULL AND gs.createdAt < :cutoffDate")
+    int softDeleteOldTempUserSessions(@Param("cutoffDate") LocalDateTime cutoffDate);
 }

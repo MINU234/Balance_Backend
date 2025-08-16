@@ -1,6 +1,7 @@
 package Balance_Game.Balance_Game.game.service;
 
 import Balance_Game.Balance_Game.common.util.ShareCodeGenerator;
+import Balance_Game.Balance_Game.common.constants.GameConstants;
 import Balance_Game.Balance_Game.game.dto.GameResultDto;
 import Balance_Game.Balance_Game.game.dto.GameComparisonDto;
 import Balance_Game.Balance_Game.game.entity.GameSession;
@@ -107,6 +108,34 @@ public class GamePlayService {
 
         return response;
     }
+    
+    /**
+     * 고유한 공유 코드 생성 (개선된 알고리즘)
+     */
+    private String generateUniqueShareCode() {
+        String shareCode;
+        int attempts = 0;
+        
+        do {
+            // 타임스탬프 기반 코드 먼저 시도
+            shareCode = shareCodeGenerator.generateShareCode();
+            attempts++;
+            
+            // 일정 횟수 실패 시 순수 랜덤 코드로 전환
+            if (attempts > GameConstants.MAX_SHARE_CODE_ATTEMPTS / 2) {
+                shareCode = shareCodeGenerator.generateRandomShareCode();
+            }
+            
+            if (attempts > GameConstants.MAX_SHARE_CODE_ATTEMPTS) {
+                // 최종 실패 시 현재 시간 기반 고유 코드 생성
+                shareCode = "ERR" + String.valueOf(System.currentTimeMillis()).substring(8, 13);
+                log.warn("공유 코드 생성 최대 시도 횟수 초과, 임시 코드 사용: {}", shareCode);
+                break;
+            }
+        } while (gameSessionRepository.existsByShareCode(shareCode));
+        
+        return shareCode;
+    }
 
     /**
      * 사용자 답변 기록
@@ -173,17 +202,8 @@ public class GamePlayService {
         // 게임 완료 처리
         session.complete();
 
-        // 공유 코드 생성 (중복 체크)
-        String shareCode;
-        int attempts = 0;
-        do {
-            shareCode = shareCodeGenerator.generateShareCode();
-            attempts++;
-            if (attempts > 100) {
-                throw new RuntimeException("공유 코드 생성 실패: 고유한 코드를 생성할 수 없습니다.");
-            }
-        } while (gameSessionRepository.existsByShareCode(shareCode));
-
+        // 개선된 공유 코드 생성 (타임스탬프 기반으로 충돌 확률 최소화)
+        String shareCode = generateUniqueShareCode();
         session.setShareCode(shareCode);
         gameSessionRepository.save(session);
 
@@ -239,9 +259,9 @@ public class GamePlayService {
             throw new IllegalArgumentException("다른 질문 묶음으로는 비교할 수 없습니다.");
         }
 
-        // 답변 조회
-        List<UserAnswer> originalAnswers = userAnswerRepository.findByGameSessionId(originalSession.getId());
-        List<UserAnswer> compareAnswers = userAnswerRepository.findByGameSessionId(compareSessionId);
+        // 답변 조회 (성능 최적화: Fetch Join 사용)
+        List<UserAnswer> originalAnswers = userAnswerRepository.findByGameSessionIdWithDetails(originalSession.getId());
+        List<UserAnswer> compareAnswers = userAnswerRepository.findByGameSessionIdWithDetails(compareSessionId);
 
         // 일치율 계산
         int matchCount = 0;

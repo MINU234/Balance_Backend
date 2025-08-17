@@ -58,6 +58,15 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// 리소스 파일의 플레이스홀더 처리
+processResources {
+	filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+		'project.version': project.version,
+		'project.build.sourceEncoding': 'UTF-8',
+		'java.version': '17'
+	])
+}
+
 // Querydsl QClass 파일 생성 위치 지정
 def querydslDir = 'src/main/generated'
 

@@ -39,4 +39,6 @@ out/
 application-secret.yml
 *.properties
 
-/src/main/generated
+/src/main/generatedjar_temp/
+temp/
+temp2/

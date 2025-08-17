@@ -42,3 +42,8 @@ application-secret.yml
 /src/main/generatedjar_temp/
 temp/
 temp2/
+src/main/generated/
+*.log
+*.zip
+balance-game-logs.zip
+LogFiles/

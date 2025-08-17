@@ -50,27 +50,6 @@ jobs:
         name: jar-artifact
         path: build/libs/*.jar
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/create_admin_auth'
-    
-    steps:
-    - name: Download build artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: jar-artifact
-        path: ./artifacts
-        
-    - name: Azure Login
-      uses: azure/login@v2
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-    - name: Deploy to Azure App Service
-      run: |
-        az webapp deploy \
-          --resource-group MINWOO \
-          --name ${{ env.AZURE_WEBAPP_NAME }} \
-          --src-path ./artifacts/Balance_Game-0.0.1-SNAPSHOT.jar \
-          --type jar
+  # Note: Manual deployment required due to Azure subscription access limitations
+  # Build successful - Download JAR artifact and deploy manually using:
+  # az webapp deploy --resource-group MINWOO --name balance-game --src-path ./Balance_Game-0.0.1-SNAPSHOT.jar --type jar

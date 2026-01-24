@@ -1,0 +1,106 @@
+spring:
+  # Azure PostgreSQL 연결 설정
+  datasource:
+    url: ${AZURE_DATABASE_URL:jdbc:postgresql://localhost:5432/balance_game}
+    username: ${AZURE_DATABASE_USERNAME:balance_user}
+    password: ${AZURE_DATABASE_PASSWORD:balance_password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 20000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 300000
+      leak-detection-threshold: 60000
+      
+  # JPA 설정
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_batch_fetch_size: 100
+        format_sql: false
+        show_sql: false
+    show-sql: false
+    
+  # Flyway 마이그레이션 설정
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    out-of-order: false
+    locations: classpath:db/migration
+    
+  # 보안 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope: profile,email
+            redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/login/oauth2/code/google}
+
+# JWT 설정
+jwt:
+  secret: ${JWT_SECRET:your-very-secure-jwt-secret-key-for-production-at-least-256-bits}
+  access-token-expiration: ${JWT_ACCESS_EXPIRATION:3600000}
+  refresh-token-expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+# CORS 설정
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:https://your-frontend-domain.com,https://www.your-frontend-domain.com}
+  allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+  allowed-headers: ${CORS_ALLOWED_HEADERS:Content-Type,Authorization,X-Requested-With,Cache-Control}
+  
+# 서버 설정
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+    
+# 로깅 설정
+logging:
+  level:
+    com.Balance_Game: ${LOG_LEVEL:INFO}
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: /tmp/balance-game.log
+    max-size: 100MB
+    max-history: 30
+
+# 관리 엔드포인트 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  metrics:
+    export:
+      simple:
+        enabled: true
+
+# 애플리케이션 정보
+info:
+  app:
+    name: Balance Game
+    description: Interactive Balance Game Application
+    version: 1.0.0
+    encoding: UTF-8
+    java:
+      version: 17

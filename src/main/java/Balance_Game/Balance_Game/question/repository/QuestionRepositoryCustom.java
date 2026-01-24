@@ -7,4 +7,7 @@ import org.springframework.data.domain.Pageable;
 public interface QuestionRepositoryCustom {
     // 인기 질문 목록 조회 (구현은 Impl 클래스에서)
     Page<Question> findPopularQuestions(Pageable pageable);
+    
+    // 승인된 인기 질문 목록 조회
+    Page<Question> findApprovedPopularQuestions(Pageable pageable);
 }

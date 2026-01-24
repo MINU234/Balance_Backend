@@ -28,7 +28,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private UserDetails createUserDetails(User user) {
         // 권한 정보를 GrantedAuthority 객체로 변환
-        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + user.getRole().toString());
+        String roleName = (user.getRole() != null) ? user.getRole().toString() : "USER";
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + roleName);
 
         return new org.springframework.security.core.userdetails.User(
                 user.getEmail(),

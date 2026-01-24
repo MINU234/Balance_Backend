@@ -14,7 +14,7 @@ import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/images")
+@RequestMapping("/images")
 public class ImageController {
 
     // Azure에 실제 파일 업로드를 담당하는 서비스

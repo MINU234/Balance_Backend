@@ -1,5 +1,6 @@
 package Balance_Game.Balance_Game.auth.security;
 
+import Balance_Game.Balance_Game.auth.dto.TokenDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
@@ -25,34 +26,56 @@ public class JwtTokenProvider {
 
     private final Key key;
     private final long accessTokenExpirationTime;
+    private final long refreshTokenExpirationTime;
 
     // application.yml에서 설정값 주입
     public JwtTokenProvider(@Value("${jwt.secret}") String secretKey,
-                            @Value("${jwt.access-token-expiration-minutes}") long expirationMinutes) {
+                            @Value("${jwt.access-token-expiration-minutes:30}") long accessExpirationMinutes,
+                            @Value("${jwt.refresh-token-expiration-days:7}") long refreshExpirationDays) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-        this.accessTokenExpirationTime = expirationMinutes * 60 * 1000;
+        this.accessTokenExpirationTime = accessExpirationMinutes * 60 * 1000; // 30분
+        this.refreshTokenExpirationTime = refreshExpirationDays * 24 * 60 * 60 * 1000; // 7일
     }
 
-    // 1. JWT 토큰 생성
+    // 1. Access Token 생성
     public String createToken(Authentication authentication) {
+        return createToken(authentication, accessTokenExpirationTime);
+    }
+    
+    // 2. Refresh Token 생성
+    public String createRefreshToken(Authentication authentication) {
+        return createToken(authentication, refreshTokenExpirationTime);
+    }
+    
+    // 3. 공통 토큰 생성 메서드
+    private String createToken(Authentication authentication, long expirationTime) {
         // 권한 정보 가져오기
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date accessTokenExpiresIn = new Date(now + accessTokenExpirationTime);
+        Date expiresIn = new Date(now + expirationTime);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim("auth", authorities) // "auth"라는 이름으로 권한 정보 저장
-                .setExpiration(accessTokenExpiresIn)
+                .claim("auth", authorities)
+                .setIssuedAt(new Date(now))
+                .setExpiration(expiresIn)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+    
+    // 4. TokenDto 생성
+    public TokenDto createTokenDto(Authentication authentication) {
+        String accessToken = createToken(authentication);
+        String refreshToken = createRefreshToken(authentication);
+        
+        return TokenDto.of(accessToken, refreshToken, accessTokenExpirationTime / 1000);
+    }
 
-    // 2. 토큰에서 인증 정보 조회
+    // 5. 토큰에서 인증 정보 조회
     public Authentication getAuthentication(String accessToken) {
         Claims claims = parseClaims(accessToken);
 

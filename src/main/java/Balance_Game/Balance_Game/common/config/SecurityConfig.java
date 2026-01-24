@@ -42,10 +42,23 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // 환경변수로 허용 도메인 설정 (보안 강화)
+        String allowedOrigins = System.getProperty("cors.allowed.origins", 
+            "http://localhost:3000,https://orange-mushroom-02fa24500.2.azurestaticapps.net");
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        // 보안 강화: 필요한 헤더만 허용
+        configuration.setAllowedHeaders(Arrays.asList(
+            "Content-Type", 
+            "Authorization", 
+            "X-Requested-With",
+            "Cache-Control"
+        ));
+        // 노출할 헤더 명시
+        configuration.setExposedHeaders(Arrays.asList("Set-Cookie"));
         configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L); // 1시간 캐시
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -65,15 +78,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         // --- 누구나 접근 가능한 URL 목록 ---
                         .requestMatchers(
-                                "/api/auth/**",      // 일반 로그인/회원가입
-                                "/api/game/**",      // 게임 플레이 (비회원 가능)
-                                "/oauth2/**"         // [추가] 소셜 로그인 관련 경로는 반드시 허용
+                                "/auth/**",                    // 일반 로그인/회원가입
+                                "/game/**",                    // 게임 플레이 (비회원 가능)
+                                "/oauth2/**",                      // 소셜 로그인 관련 경로
+                                "/actuator/**"                     // 모든 actuator 엔드포인트
                         ).permitAll()
                         // --- 특정 GET 요청은 누구나 가능하도록 구체화 ---
                         .requestMatchers(HttpMethod.GET,
-                                "/api/questions/popular",
-                                "/api/question-bundles/popular",
-                                "/api/question-bundles/{id}"
+                                "/questions/popular",           // 인기 질문
+                                "/question-bundles/popular",    // 인기 질문 번들
+                                "/question-bundles/{id}",       // 특정 질문 번들 상세
+                                "/question-bundles/search"      // 질문 번들 검색
                         ).permitAll()
                         // --- 나머지 모든 요청은 인증된 사용자만 접근 가능 ---
                         .anyRequest().authenticated()

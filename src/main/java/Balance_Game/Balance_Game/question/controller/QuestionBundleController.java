@@ -1,8 +1,8 @@
-// src/main/java/Balance_Game/Balance_Game/controller/QuestionBundleController.java
 package Balance_Game.Balance_Game.question.controller;
 
 import Balance_Game.Balance_Game.question.dto.PopularBundleDto;
 import Balance_Game.Balance_Game.question.dto.QuestionBundleCreateRequestDto;
+import Balance_Game.Balance_Game.question.dto.QuestionBundleDetailDto;
 import Balance_Game.Balance_Game.question.service.QuestionBundleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/question-bundles")
+@RequestMapping("/question-bundles")
 public class QuestionBundleController {
 
     private final QuestionBundleService questionBundleService;
@@ -35,9 +35,27 @@ public class QuestionBundleController {
         return ResponseEntity.ok(bundleId);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<QuestionBundleDetailDto> getQuestionBundle(@PathVariable Long id) {
+        QuestionBundleDetailDto bundle = questionBundleService.findByIdWithQuestions(id);
+        return ResponseEntity.ok(bundle);
+    }
+
+
     @GetMapping("/popular")
     public ResponseEntity<Page<PopularBundleDto>> getPopularBundles(Pageable pageable) {
         Page<PopularBundleDto> popularBundles = questionBundleService.getPopularBundles(pageable);
         return ResponseEntity.ok(popularBundles);
+    }
+
+    /**
+     * 검색어로 질문 묶음을 페이징 조회합니다.
+     */
+    @GetMapping("/search")
+    public Page<PopularBundleDto> searchBundles(
+            @RequestParam String query,
+            Pageable pageable
+    ) {
+        return questionBundleService.searchBundles(query, pageable);
     }
 }

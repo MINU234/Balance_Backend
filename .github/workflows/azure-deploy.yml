@@ -1,0 +1,55 @@
+name: Backend CI/CD
+
+on:
+  push:
+    branches: [ create_admin_auth, master ]
+    paths:
+      - '**'
+  pull_request:
+    branches: [ create_admin_auth, master ]
+    paths:
+      - '**'
+
+env:
+  AZURE_WEBAPP_NAME: balance-game
+  JAVA_VERSION: '17'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ env.JAVA_VERSION }}
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Build application
+      run: ./gradlew build -x test
+      
+    - name: Upload build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: jar-artifact
+        path: build/libs/*.jar
+
+  # Note: Manual deployment required due to Azure subscription access limitations
+  # Build successful - Download JAR artifact and deploy manually using:
+  # az webapp deploy --resource-group MINWOO --name balance-game --src-path ./Balance_Game-0.0.1-SNAPSHOT.jar --type jar

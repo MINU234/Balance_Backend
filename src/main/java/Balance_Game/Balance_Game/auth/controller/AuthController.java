@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 public class AuthController {
 
     private final UserService userService;
@@ -72,10 +72,19 @@ public class AuthController {
      */
     @GetMapping("/me")
     public ResponseEntity<UserInfoDto> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
-        // @AuthenticationPrincipal을 통해 현재 인증된 사용자의 정보를 가져옴
-        User user = userService.findByEmail(userDetails.getUsername());
-        UserInfoDto userInfo = UserInfoDto.from(user);
-
-        return ResponseEntity.ok(userInfo);
+        // 인증되지 않은 사용자의 경우 401 응답
+        if (userDetails == null) {
+            return ResponseEntity.status(401).build();
+        }
+        
+        try {
+            // @AuthenticationPrincipal을 통해 현재 인증된 사용자의 정보를 가져옴
+            User user = userService.findByEmail(userDetails.getUsername());
+            UserInfoDto userInfo = UserInfoDto.from(user);
+            return ResponseEntity.ok(userInfo);
+        } catch (Exception e) {
+            // 사용자 정보 조회 실패 시 401 응답 (인증 토큰이 유효하지 않음)
+            return ResponseEntity.status(401).build();
+        }
     }
 }

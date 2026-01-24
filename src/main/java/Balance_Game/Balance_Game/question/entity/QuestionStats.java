@@ -37,9 +37,11 @@ public class QuestionStats {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    // 생성자에 @Builder 적용 (권장 방식)
     @Builder
     public QuestionStats(Question question) {
         this.question = question;
+        this.id = question.getId(); // MapsId 사용시 필요
     }
 
     public void incrementCount(SelectedOption option) {
@@ -50,4 +52,7 @@ public class QuestionStats {
         }
         this.totalCount++;
     }
+    
+    // setter 메서드는 제거 (불필요)
+    // JPA가 내부적으로 리플렉션을 사용하므로 setter 없이도 동작
 }

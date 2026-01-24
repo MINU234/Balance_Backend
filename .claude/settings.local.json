@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cp:*)",
+      "Bash(mv:*)",
+      "Bash(.\\gradlew.bat clean:*)",
+      "Bash(gradle:*)",
+      "Bash(powershell.exe:*)",
+      "Bash(az:*)",
+      "Bash(rm:*)",
+      "Bash(.gradlew.bat:*)",
+      "Bash(dir)",
+      "Bash(powershell:*)",
+      "WebFetch(domain:balance-game-ekedbfhkcxeyc8cb.koreacentral-01.azurewebsites.net)",
+      "WebFetch(domain:balance-game-ekedbfhkcxeyc8cb.koreacentral-01.azurewebsites.net)",
+      "Bash(curl:*)"
+    ],
+    "deny": [],
+    "ask": [],
+    "defaultMode": "acceptEdits"
+  }
+}
